@@ -4,7 +4,8 @@ const cors = require("cors");
 const color = require("colors");
 dotenv.config();
 
-const connection_karde = require("./config/dbConnect");
+const connection_karde = require("./config/dbConnect"); 
+const seed_counters = require("./services/counterSeeder");
 
 connection_karde();
 
@@ -18,6 +19,8 @@ app.use(cors());
 app.get("/", (req, res) => {
     res.send("This Is Organisation User-Projects Management System Server!!!")
 });
+
+seed_counters();
 
 // this should be defined at the last after the routes.
 app.use(require("./middleware/errorHandler"));

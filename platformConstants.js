@@ -1,5 +1,3 @@
-const system_roles = ["Admin", "Viewer", "Contributer"];
-
 const system_permissions = [
     "CREATE-USERS", "VIEW-USERS", "UPDATE-USERS", "DELETE-USERS",
     "CREATE-ROLES", "VIEW-ROLES", "UPDATE-ROLES", "DELETE-ROLES",
@@ -11,5 +9,7 @@ const system_permissions = [
 
 const viewer_permissions = ["VIEW-USERS", "VIEW-ALL-PROJECTS", "VIEW-PROJECT-ANALYTICS"];
 const contributer_permissions = ["VIEW-USERS", "VIEW-ALL-PROJECTS", "UPDATE-PROJECTS"]
+
+const system_roles = {"Admin": system_permissions, "Viewer" : viewer_permissions, "Contributer" : contributer_permissions};
 
 module.exports = {system_roles, system_permissions, viewer_permissions, contributer_permissions};
