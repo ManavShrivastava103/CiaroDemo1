@@ -11,18 +11,14 @@ const seed_counters = async () => {
             prefix : "ORG"
         }
     ];
-
     for(const counter of counters){
-
         const existing_counter = await Counter.findOne({ counter_name : counter.counter_name });
-
         if(!existing_counter){
             await Counter.create(counter);
             console.log("Counter Seeded : ", counter);
         }
         console.log("Counter Exists : ", counter);
     }
-
     console.log("Counters Seeding Check Completed.");
 };
 
