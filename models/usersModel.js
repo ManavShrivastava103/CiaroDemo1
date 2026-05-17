@@ -6,7 +6,12 @@ const user_schema = new mongoose.Schema({
     email : {type:String, required:[true, "Email is Required"], unique:true}, 
     password : {type:String},
     org_id : {type:mongoose.Schema.Types.ObjectId, ref:"Organization", required:true},
-    user_role : {type:mongoose.Schema.Types.ObjectId, ref:"Role", required:true}
+    user_role : {type:mongoose.Schema.Types.ObjectId, ref:"Role", required:true},
+    status:{
+        type:String, 
+        enum : ["Active", "Inactive", "Suspended"],
+        default : "Active"
+    }
 }, {
     timestamps : true
 });

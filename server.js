@@ -6,6 +6,8 @@ dotenv.config();
 
 const connection_karde = require("./config/dbConnect"); 
 const seed_counters = require("./services/counterSeeder");
+const orgRouters = require("./routes/organizationRoutes");
+const userRoutes = require("./routes/userRoutes")
 
 connection_karde();
 
@@ -19,6 +21,9 @@ app.use(cors());
 app.get("/", (req, res) => {
     res.send("This Is Organisation User-Projects Management System Server!!!")
 });
+
+app.use("/org",orgRouters);
+app.use("/users",userRoutes);
 
 seed_counters();
 
