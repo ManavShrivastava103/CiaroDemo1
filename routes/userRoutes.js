@@ -15,10 +15,10 @@ router.post("/login",loginUser);
 
 router.post("/send-otp",sendOtp)
 
-router.patch("/:id",validateToken, verify_permission("UPDATE-USERS"), updateUser);
+router.patch("/:id",validate_token, verify_permission("UPDATE-USERS"), updateUser);
 
-router.delete("/:id",validateToken, verify_permission("DELETE-USERS"), deleteUser);
+router.delete("/:id",validate_token, verify_permission("DELETE-USERS"), deleteUser);
 
-router.delete("/",validateToken,  verify_permission("DELETE-USERS"), deleteMultipleUsers);
+router.delete("/",validate_token,  verify_permission("DELETE-USERS"), deleteMultipleUsers);
 
 module.exports = router;
