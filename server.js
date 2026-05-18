@@ -10,7 +10,9 @@ const orgRouters = require("./routes/organizationRoutes");
 const userRoutes = require("./routes/userRoutes");
 const projectRoutes = require("./routes/projectRoutes");
 const dashboardRoutes = require("./routes/dashboardRoutes");
-const roleRoutes =require("./routes/roleRoutes")
+const roleRoutes =require("./routes/roleRoutes");
+const cloudinary = require("./config/cloudinaryConnect");
+
 
 connection_karde();
 

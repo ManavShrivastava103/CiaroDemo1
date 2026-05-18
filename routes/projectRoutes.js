@@ -16,6 +16,11 @@ const {
     view_assigned_projects
 } = require("../controller/projectController");
 
+const project_file_router = require("./projfileRoutes");
+
+// Adding Routes for Project File Upload
+project_router.use("/project_files", validate_token, verify_project_access("UPDATE-PROJECTS"), project_file_router);
+
 // Create Project
 project_router.post("/", validate_token, verify_permission("CREATE-PROJECTS"), create_project);
 
@@ -42,5 +47,6 @@ project_router.delete("/:project_id", validate_token, verify_project_access("DEL
 
 // Delete Multiple Projects
 project_router.delete("/delete-multiple", validate_token, verify_permission("DELETE-ALL-PROJECTS"), delete_multiple_projects);
+
 
 module.exports = project_router;
