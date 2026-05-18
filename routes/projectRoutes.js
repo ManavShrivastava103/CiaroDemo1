@@ -1,8 +1,8 @@
 const express = require("express");
 const project_router = express.Router();
 const validate_token = require("../middleware/validateTokenHandler");
-const verify_permission = require("../middleware/verifyPermission");
-const verify_project_access = require("../middleware/verifyProjectAccess");
+const verify_permission = require("../middleware/permissionVerifier");
+const verify_project_access = require("../middleware/projectAccessVerifier");
 
 const {
     create_project,
@@ -14,7 +14,7 @@ const {
     edit_project_status,
     update_assigned_employees,
     view_assigned_projects
-} = require("../controllers/projectControllers");
+} = require("../controller/projectController");
 
 // Create Project
 project_router.post("/", validate_token, verify_permission("CREATE-PROJECTS"), create_project);

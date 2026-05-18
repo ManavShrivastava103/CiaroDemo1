@@ -194,7 +194,7 @@ const User = require("../models/usersModel");
 const jwt = require("jsonwebtoken");
 const Organization = require("../models/organizationsModel");
 const Role = require("../models/rolesModel");
-const {send_otp_email,check_otp} = require("../services/otpServices");
+const {send_otp_email,check_otp,send_registration_success_email} = require("../services/otpServices");
 
 
 const registerUser = asyncHandler(async(req,res)=>{
@@ -232,6 +232,8 @@ const registerUser = asyncHandler(async(req,res)=>{
         user_role,
         org_id
     });
+
+    await send_registration_success_email(email);
 
     return res.status(201).json({message:"User registered",data:user});
 

@@ -113,4 +113,37 @@ const send_otp_email = async (uemail, otp_purpose) => {
 };
 
 
-module.exports = {send_otp_email, check_otp};
+// send sucess email -> register user
+// Function to send registration success email
+const send_registration_success_email = async (uemail) => {
+    try {
+        const mail_options = {
+            from: process.env.EMAIL_KA_USERNAME,
+            to: uemail,
+            subject: "Registration Successful for CIARO DEMO PLATFORM",
+            text: `Hello,\n\nYour registration was successful. Welcome to our platform!\n\nYou can now log in and start using your account.\n\nRegards,\nCIARO DEMO Team`
+        };
+
+        const email_result = await transporter.sendMail(mail_options);
+
+        if (email_result.accepted.length > 0) {
+            return {
+                success: true,
+                message: "Registration success email sent"
+            };
+        }
+
+        return {
+            success: false,
+            message: "Email not accepted by transporter"
+        };
+
+    } catch (err) {
+        return {
+            success: false,
+            message: `Email sending failed: ${err.message}`
+        };
+    }
+};
+
+module.exports = {send_otp_email, check_otp,send_registration_success_email};

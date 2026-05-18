@@ -7,7 +7,10 @@ dotenv.config();
 const connection_karde = require("./config/dbConnect"); 
 const seed_counters = require("./services/counterSeeder");
 const orgRouters = require("./routes/organizationRoutes");
-const userRoutes = require("./routes/userRoutes")
+const userRoutes = require("./routes/userRoutes");
+const projectRoutes = require("./routes/projectRoutes");
+const dashboardRoutes = require("./routes/dashboardRoutes");
+const roleRoutes =require("./routes/roleRoutes")
 
 connection_karde();
 
@@ -24,6 +27,9 @@ app.get("/", (req, res) => {
 
 app.use("/org",orgRouters);
 app.use("/users",userRoutes);
+app.use("/project",projectRoutes);
+app.use("/dashboard",dashboardRoutes);
+app.use("/roles",roleRoutes);
 
 seed_counters();
 
