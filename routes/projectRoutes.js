@@ -19,7 +19,7 @@ const {
 const project_file_router = require("./projfileRoutes");
 
 // Adding Routes for Project File Upload
-project_router.use("/project_files", validate_token, verify_project_access("UPDATE-PROJECTS"), project_file_router);
+project_router.use("/project_files", validate_token, project_file_router);
 
 // Create Project
 project_router.post("/", validate_token, verify_permission("CREATE-PROJECTS"), create_project);

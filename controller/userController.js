@@ -198,33 +198,44 @@ const {send_otp_email,check_otp,send_registration_success_email} = require("../s
 
 
 const registerUser = asyncHandler(async(req,res)=>{
-    const {name,email,user_role,org_id}=req.body;
+    const {name, email, user_role, org_id}=req.body;
 
-    const existingUser = await User.findOne({email});
+    if(!name || !email || !user_role || !org_id){
+        res.status(400);
+        throw new Error("All fields are required.");
+    }
+
+    const [existingUser, organization, role] = await Promise.all([
+        User.findOne({email, org_id}).select("_id").lean(),
+        Organization.findOne({_id:org_id, status:"Active"}).select("_id status").lean(),
+        Role.findOne({_id:user_role, org_id}).select("_id").lean()
+    ])
+
+    // const existingUser = await User.findOne({email});
 
     if(existingUser){
         return res.status(400).json({message:"User already exists."});
     }
 
-    const organization = await Organization.findById(org_id);
+    // const organization = await Organization.findById(org_id);
 
     if(!organization){
-        return res.status(404).json({message:"Organization not found."});
+        return res.status(404).json({message:"Organization not found or inactive."});
     }
 
-    if(organization.status !== "Active"){
-        return res.status(403).json({message:"Organization is not active."});
-    }
+    // if(organization.status !== "Active"){
+    //     return res.status(403).json({message:"Organization is not active."});
+    // }
 
-    const role = await Role.findById(user_role);
+    // const role = await Role.findById(user_role);
 
     if(!role){
-        return res.status(404).json({message:"Role not found."});
+        return res.status(404).json({message:"Role not found in Organization."});
     }
     
-    if(role.org_id.toString() !== org_id.toString()){
-        return res.status(403).json({ message : "Role Does Not Belong To Organization" });
-    }
+    // if(role.org_id.toString() !== org_id.toString()){
+    //     return res.status(403).json({ message : "Role Does Not Belong To Organization" });
+    // }
 
     const user = await User.create({
         name,
@@ -245,23 +256,23 @@ const loginUser = asyncHandler(async(req,res)=>{
 
     const user = await User.findOne({email});
 
-    if(!user){
-        return res.status(404).json({message:"User not found."});
+    if(!user && user.status !== "Active"){
+        return res.status(404).json({message:"User not found or not active."});
     }
 
-    if(user.status !== "Active"){
-        return res.status(403).json({message:"user is not active."});
-    }
+    // if(user.status !== "Active"){
+    //     return res.status(403).json({message:"user is not active."});
+    // }
 
     const org = await Organization.findById(user.org_id);
 
-    if(!org){
-        return res.status(404).json({message:"Organization not found."});
+    if(!org && org.status !== "Active" ){
+        return res.status(404).json({message:"Organization not found or not active."});
     }
 
-    if(org.status !== "Active"){
-        return res.status(403).json({message:"Organization is not active."});
-    }
+    // if(org.status !== "Active"){
+    //     return res.status(403).json({message:"Organization is not active."});
+    // }
 
     const otp_result = await check_otp(otp,email,"LOGIN");
 
@@ -328,7 +339,7 @@ const getAllUsers = asyncHandler(async(req,res)=>{
 
 const getUserById = asyncHandler(async(req,res)=>{
 
-    const user = await User.findById(req.params.id);
+    const user = await User.findOne({_id:req.params.id, org_id:req.user.org_id});
 
     if(!user){
         return res.status(404).json({
@@ -336,11 +347,11 @@ const getUserById = asyncHandler(async(req,res)=>{
         });
     }
 
-    if(user.org_id.toString() !== req.user.org_id.toString()){
-        return res.status(403).json({
-            message : "Cross Organization Access Denied"
-        });
-    }
+    // if(user.org_id.toString() !== req.user.org_id.toString()){
+    //     return res.status(403).json({
+    //         message : "Cross Organization Access Denied"
+    //     });
+    // }
 
     return res.status(200).json({
         message:"Successfully get user.",

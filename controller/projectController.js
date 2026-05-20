@@ -3,6 +3,8 @@ const Project = require("../models/projectsModel");
 const User = require("../models/usersModel");
 const generate_unique_id = require("../services/idGenerator");
 
+const {project_file_deletor} = require("./uploadfileController");
+
 // 1
 // Create Project Controller
 // POST -> /api/project/
@@ -160,11 +162,16 @@ const update_assigned_employees = async_handler(async(req, res) => {
 // DELETE -> /api/project/:project_id
 // Private Access - PERMISSION REQUIRED : DELETE-PROJECTS
 const delete_project = async_handler(async(req, res) => {
-    const deleted_project = await Project.findByIdAndDelete(req.params.project_id);
-    if(!deleted_project) {
+    const req_project = await Project.findById(req.params.project_id);
+
+    if (!req_project) {
         res.status(404);
         throw new Error("Project Not Found");
     }
+
+    await project_file_deletor(req.params.project_id);
+    const deleted_project = await Project.findByIdAndDelete(req.params.project_id);
+
     res.status(200).json({message : "Project Deleted Successfully"});
 });
 
@@ -182,6 +189,9 @@ const delete_multiple_projects = async_handler(async(req, res) => {
         throw new Error(
             "Some Projects Do Not Belong To Your Organization"
         );
+    }
+    for( const project of org_projects){
+        await project_file_deletor(project._id);
     }
     await Project.deleteMany({_id : {$in : project_ids}});
     res.status(200).json({message : "Projects Deleted Successfully"});
